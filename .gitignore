@@ -18,6 +18,13 @@ replay_pid*
 build/
 !gradle/wrapper/gradle-wrapper.jar
 
+# Local Docker Compose overrides (see deploy/.env.example)
+.env
+deploy/.env
+
+# Claude Code local files
+.claude/
+
 ### IntelliJ IDEA ###
 .idea
 *.iws

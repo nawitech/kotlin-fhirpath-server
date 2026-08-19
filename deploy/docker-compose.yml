@@ -1,0 +1,12 @@
+name: fhirpath-server
+services:
+  fhirpath-server:
+    image: ${IMAGE:-docker.io/nawitech/kotlin-fhirpath}:${TAG:-latest}
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    ports:
+      - "${PORT:-8080}:8080"
+    environment:
+      PORT: "8080"
+    restart: unless-stopped
