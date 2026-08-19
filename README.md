@@ -16,7 +16,7 @@ The server exposes three FHIRPath evaluation endpoints — one per FHIR version 
 
 |            Endpoint            | Method |                                 Description                                 |
 |--------------------------------|--------|-----------------------------------------------------------------------------|
-| `/`                            | GET    | API overview and endpoint listing                                           |
+| `/`                            | GET    | API overview, endpoint listing, and server version                          |
 | `/health`                      | GET    | Health check with current timestamp                                         |
 | `/kotlin-fhirpath-config.json` | GET    | [FHIRPath Lab custom engine configuration][custom-config] for local testing |
 | `/fhirpath-r4`                 | POST   | Evaluate a FHIRPath expression against an **R4** resource                   |
@@ -69,6 +69,35 @@ and debug trace information.
 
 Validation errors return HTTP `400` with an `OperationOutcome`. Unexpected server errors return HTTP
 `500` with an `OperationOutcome`.
+
+## Versioning
+
+The build derives the server version from `git describe --tags --always --dirty` (see
+`build.gradle.kts`). The `/` endpoint reports this version. Every deployment therefore identifies
+the release or commit that produced it.
+
+The build removes the leading `v` from the tag name:
+
+|         Build point          |                   Reported version                    |
+|------------------------------|-------------------------------------------------------|
+| On the exact tag `v1.2.3`    | `1.2.3`                                               |
+| 4 commits after tag `v1.2.3` | `1.2.3-4-gabc1234` (commit count and abbreviated SHA) |
+| Before the first tag exists  | The abbreviated commit SHA                            |
+| With uncommitted changes     | The same value, plus the suffix `-dirty`              |
+| When git is unavailable      | `0.0.0-unknown`                                       |
+
+### Create a release
+
+To release a new version, tag the commit and push the tag:
+
+```bash
+git tag v1.2.3
+git push origin v1.2.3
+```
+
+Every later build reads the new tag, including the Docker build. You do not need to edit a version
+number anywhere in the project. You can also turn the tag into a GitHub Release, but the version
+does not depend on it.
 
 ## Deployment
 
